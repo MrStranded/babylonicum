@@ -13,15 +13,15 @@ public class Brain {
 	/**
 	 * the length of the brain cell array
 	 */
-	private int length = 3;
+	private int length = 10;
 	/**
 	 * the width of the brain cell array
 	 */
-	private int width = 1;
+	private int width = 10;
 	/**
 	 * number of maximum Axon connections
 	 */
-	private int connections = 2;
+	private int connections = 7;
 	/**
 	 * the maximum distance that a axon may refer backwards
 	 */
@@ -147,6 +147,23 @@ public class Brain {
 	 */
 	private boolean inBounds(int x, int y) {
 		return (x >= 0) && (y >= 0) && (x < length) && (y < width);
+	}
+
+	//######################################################################################################
+	//######################################### Debugging ##################################################
+	//######################################################################################################
+
+	/**
+	 * Gives a simple representation of the nodes at the current moment.
+	 */
+	public void print() {
+		System.out.println(System.currentTimeMillis());
+		for (int w=0; w<width; w++) {
+			for (int l=0; l<length; l++) {
+				System.out.print("N("+String.valueOf(nodes[l][w].getExcitement()).substring(0,3)+") ");
+			}
+			System.out.println("<");
+		}
 	}
 
 }

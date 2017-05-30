@@ -30,7 +30,23 @@ public class Node {
 	 * If the current excitement exceeds the threshold, sends it through each Axon to the target Nodes.
 	 */
 	public void propagateExcitement() {
+		if ((axons != null)&&(axons.length > 0)) {
+			if (excitement >= threshold) {
+				for (Axon axon : axons) {
+					axon.propagateExcitement(excitement);
+				}
+			}
+		}
+	}
 
+	/**
+	 * Adds the given excitement to the current one. Excitement may not be negative and not above 100.
+	 * @param excitement that is being added.
+	 */
+	public void addExcitement(double excitement) {
+		this.excitement += excitement;
+		if (this.excitement < 0) this.excitement = 0;
+		if (this.excitement > 100) this.excitement = 100;
 	}
 
 	//######################################################################################################
