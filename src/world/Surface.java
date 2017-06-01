@@ -70,10 +70,47 @@ public class Surface {
 	 * Adds the tile of the given position to the List.
 	 */
 	private void tryToAdd(List<Tile> tileList, int x, int y) {
+		int[] pos = getPosition(x,y);
+		if (tiles[pos[0]][pos[1]] != null) tileList.add(tiles[pos[0]][pos[1]]);
+	}
+
+	/**
+	 * Caps the given coordinate to fit the bounds of the array.
+	 */
+	public int[] getPosition(int x, int y) {
 		if (x<0) x = size-1;
 		if (y<0) y = size-1;
 		if (x>=size) x = 0;
 		if (y>=size) y = 0;
-		if (tiles[x][y] != null) tileList.add(tiles[x][y]);
+
+		int[] pos = new int[2];
+		pos[0] = x;
+		pos[1] = y;
+		return pos;
+	}
+
+	/**
+	 * Returns the tile on the given position.
+	 */
+	public Tile getTile(int x,int y) {
+		return tiles[x][y];
+	}
+
+	//######################################################################################################
+	//######################################### Getters & Settesr ##########################################
+	//######################################################################################################
+
+	public Tile[][] getTiles() {
+		return tiles;
+	}
+	public void setTiles(Tile[][] tiles) {
+		this.tiles = tiles;
+	}
+
+	public int getSize() {
+		return size;
+	}
+	public void setSize(int size) {
+		this.size = size;
 	}
 }

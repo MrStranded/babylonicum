@@ -19,7 +19,7 @@ public class Brain {
 	/**
 	 * the width of the creature.intelligence.brain cell array
 	 */
-	private int width = 10;
+	private int width = 8;
 	/**
 	 * number of maximum Axon connections
 	 */
@@ -195,6 +195,17 @@ public class Brain {
 	 */
 	private boolean inBounds(int x, int y) {
 		return (x >= 0) && (y >= 0) && (x < length) && (y < width);
+	}
+
+	/**
+	 * Returns a specific node. If the position is outside of the array, returns null.
+	 */
+	public Node getNode(int x,int y) {
+		if (inBounds(x,y)) {
+			return nodes[x][y];
+		} else {
+			return null;
+		}
 	}
 
 	//######################################################################################################

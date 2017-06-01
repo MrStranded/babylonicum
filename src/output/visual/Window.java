@@ -1,9 +1,12 @@
 package output.visual;
 
+import creature.Creature;
 import creature.intelligence.brain.Axon;
 import creature.intelligence.brain.Brain;
 import creature.intelligence.brain.Hormone;
 import creature.intelligence.brain.Node;
+import world.Surface;
+import world.Tile;
 
 import javax.accessibility.Accessible;
 import java.awt.*;
@@ -128,8 +131,46 @@ public class Window extends Canvas implements Accessible{
 					hy += 20;
 				}
 			}
+		}
+	}
 
-			getBufferStrategy().show();
+	/**
+	 * Flips the buffers.
+	 */
+	public void flip() {
+		getBufferStrategy().show();
+	}
+
+	/**
+	 * A small method to draw a given Surface into the specified area.
+	 */
+	public void drawSurface(Surface surface, Creature creature, int xPos, int yPos, int width, int height) {
+		Graphics2D g2 = (Graphics2D) getBufferStrategy().getDrawGraphics();
+
+		g2.clearRect(xPos,yPos,width,height);
+
+		if (surface != null) {
+			int s = surface.getSize();
+
+			int dx = width/(s+2);
+			int dy = height/(s+2);
+
+			g2.setColor(Color.BLACK);
+			for (int x=0; x<s; x++) {
+				for (int y=0; y<s; y++) {
+					Tile tile = surface.getTile(x,y);
+					if (tile != null) {
+						int tx = xPos + dx*(x+1);
+						int ty = yPos + dy*(y+1);
+						g2.drawRect(tx,ty,dx,dy);
+						if ((creature != null) && (creature.getX() == x) && (creature.getY() == y)) {
+							g2.setColor(Color.BLUE);
+							g2.fillOval(tx,ty,dx,dy);
+							g2.setColor(Color.BLACK);
+						}
+					}
+				}
+			}
 		}
 	}
 
