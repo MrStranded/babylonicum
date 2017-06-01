@@ -29,6 +29,20 @@ public class Axon {
 	//######################################################################################################
 
 	/**
+	 * Damps the weight of the axon.
+	 */
+	public void damp() {
+		weight *= 0.99d;
+	}
+
+	/**
+	 * Tells you whether the axon is too weak and dies of off.
+	 */
+	public boolean isMarginal() {
+		return Math.abs(weight) < 0.001d;
+	}
+
+	/**
 	 * Modifies the given excitement and transmits it to the recieving Node.
 	 */
 	public void propagateExcitement(double excitement) {
@@ -44,10 +58,10 @@ public class Axon {
 	 */
 	public void modifyWeight(Hormone hormone) {
 		weight *= hormone.getGrowthFactor();
-		if (weight > 3d) weight = 3d;
-		if (weight > 0d && weight < 0.05d) weight = -0.5d;
-		if (weight < -3d) weight = -3d;
-		if (weight < 0d && weight > -0.05d) weight = 0.5d;
+		if (weight > 2d) weight = 2d;
+		//if (weight > 0d && weight < 0.05d) weight = -0.5d;
+		if (weight < -2d) weight = -2d;
+		//if (weight < 0d && weight > -0.05d) weight = 0.5d;
 	}
 
 	//######################################################################################################

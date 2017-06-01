@@ -30,7 +30,9 @@ public class Window extends Canvas implements Accessible{
 	/**
 	 * Go-to constructor for a window. Initializes with default resolution.
 	 */
-	public Window() {
+	public Window(int windowWidth, int windowHeigth) {
+		this.windowWidth = windowWidth;
+		this.windowHeigth = windowHeigth;
 
 		mainFrame = new Frame("Babylonicum");
 		mainFrame.setSize(windowWidth,windowHeigth);
@@ -47,7 +49,7 @@ public class Window extends Canvas implements Accessible{
 		controlPanel.add(this);
 
 		setBackground (Color.WHITE);
-		setSize(800, 600);
+		setSize(windowWidth, windowHeigth);
 
 		mainFrame.add(controlPanel);
 		mainFrame.setVisible(true);
@@ -65,28 +67,28 @@ public class Window extends Canvas implements Accessible{
 	 * A small method to draw the connections of a brain into the window.
 	 * @param brain that should be displayed.
 	 */
-	public void drawBrain(Brain brain) {
+	public void drawBrain(Brain brain, int xPos, int yPos, int width, int height) {
 		Graphics2D g2 = (Graphics2D) getBufferStrategy().getDrawGraphics();
 
-		g2.clearRect(0,0,windowWidth,windowHeigth);
+		g2.clearRect(xPos,yPos,width,height);
 
-		int dx = windowWidth/(brain.getLength()+2);
-		int dy = windowHeigth/(brain.getWidth()+2);
+		int dx = width/(brain.getLength()+2);
+		int dy = height/(brain.getWidth()+2);
 		int sx = dx/2;
 		int sy = dy/2;
 
 		if (brain != null) {
 			if (brain.getNodes() != null) {
-				int width = brain.getWidth();
-				int length = brain.getLength();
+				int bw = brain.getWidth();
+				int bl = brain.getLength();
 				Node[][] nodes = brain.getNodes();
 
-				for (int w=0; w<width; w++) {
-					for (int l=0; l<length; l++) {
+				for (int w=0; w<bw; w++) {
+					for (int l=0; l<bl; l++) {
 						Node node = nodes[l][w];
 						if (node != null) {
-							int x = dx*(l+1);
-							int y = dy*(w+1);
+							int x = xPos + dx*(l+1);
+							int y = yPos + dy*(w+1);
 							g2.setColor(new Color((int) (2*node.getExcitement()),(int) (2*node.getExcitement()),(int) (2*node.getExcitement())));
 							g2.fillOval(x, y,sx,sy);
 							g2.setColor(Color.BLACK);
@@ -94,16 +96,18 @@ public class Window extends Canvas implements Accessible{
 
 							if (node.getAxons() != null) {
 								for (Axon axon : node.getAxons()) {
-									if (axon.getWeight() > 0) {
-										g2.setColor(new Color(0,(int) (255d*axon.getWeight()/3d),0));
-									} else {
-										g2.setColor(new Color((int) (-255d*axon.getWeight()/3d),0,0));
-									}
-									if (axon.getTargetNode() != null) {
-										int tx = (axon.getTargetNode().getX()+1)*dx;
-										int ty = (axon.getTargetNode().getY()+1)*dy;
+									if (axon != null) {
+										if (axon.getWeight() > 0) {
+											g2.setColor(new Color(0, (int) (255d * axon.getWeight() / 2d), 0));
+										} else {
+											g2.setColor(new Color((int) (-255d * axon.getWeight() / 2d), 0, 0));
+										}
+										if (axon.getTargetNode() != null) {
+											int tx = xPos + (axon.getTargetNode().getX() + 1) * dx;
+											int ty = yPos + (axon.getTargetNode().getY() + 1) * dy;
 
-										g2.drawLine(x,y,tx,ty);
+											g2.drawLine(x, y, tx, ty);
+										}
 									}
 								}
 							}
@@ -120,7 +124,7 @@ public class Window extends Canvas implements Accessible{
 					} else {
 						g2.setColor(new Color(150,0,0));
 					}
-					g2.drawString("H: "+hormone.getGrowthFactor()+" / "+hormone.getDuration(),30,hy);
+					g2.drawString("H: "+hormone.getGrowthFactor()+" / "+hormone.getDuration(),xPos + 30,yPos + hy);
 					hy += 20;
 				}
 			}
@@ -129,4 +133,22 @@ public class Window extends Canvas implements Accessible{
 		}
 	}
 
+	//######################################################################################################
+	//######################################### Getters & Settesr ##########################################
+	//######################################################################################################
+
+
+	public int getWindowWidth() {
+		return windowWidth;
+	}
+	public void setWindowWidth(int windowWidth) {
+		this.windowWidth = windowWidth;
+	}
+
+	public int getWindowHeigth() {
+		return windowHeigth;
+	}
+	public void setWindowHeigth(int windowHeigth) {
+		this.windowHeigth = windowHeigth;
+	}
 }

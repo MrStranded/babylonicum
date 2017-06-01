@@ -1,6 +1,7 @@
 package creature.intelligence.brain;
 
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by Michael on 30.05.2017.
@@ -43,17 +44,36 @@ public class Node {
 	 * Damps the excitement of the node.
 	 */
 	public void damp() {
-		excitement *= 0.5d;
+		if (excitement > 1d) {
+			excitement *= 0.5d;
+		} else {
+			excitement = 0;
+		}
+		if (axons != null) {
+			for (int i=0; i<axons.length; i++) {
+				if (axons[i] != null) {
+					axons[i].damp();
+					if (axons[i].isMarginal()) axons[i] = null;
+				}
+			}
+		}
 	}
 
 	/**
 	 * If the current excitement exceeds the threshold, sends it through each Axon to the target Nodes.
 	 */
-	public void propagateExcitement() {
+	public void propagateExcitement(List<Hormone> hormones) {
 		if ((axons != null)&&(axons.length > 0)) {
 			if (excitement >= threshold) {
 				for (Axon axon : axons) {
-					axon.propagateExcitement(excitement);
+					if (axon != null) {
+						axon.propagateExcitement(excitement);
+						if (hormones != null) {
+							for (Hormone hormone : hormones) {
+								axon.modifyWeight(hormone);
+							}
+						}
+					}
 				}
 			}
 		}

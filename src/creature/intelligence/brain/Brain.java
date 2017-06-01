@@ -52,15 +52,20 @@ public class Brain {
 	//######################################### Processing #################################################
 	//######################################################################################################
 
+	int exPos = 0;
 	/**
 	 * Fills randomly valued excitements into the input layer of the creature.intelligence.brain.
 	 */
 	public void generateRandomInputs() {
-		for (int w = 0; w < width; w++) {
-			if (nodes[0][w] != null) {
-				nodes[0][w].setExcitement(Math.random()*100);
-			}
+//		for (int w = 0; w < width; w++) {
+//			if (nodes[0][w] != null) {
+//				nodes[0][w].setExcitement(Math.random()*100);
+//			}
+//		}
+		if (inBounds(0,exPos)) {
+			nodes[0][exPos].setExcitement(100d);
 		}
+		exPos = (exPos+1)%width;
 		// temporary!
 		if (Math.random()>0.7d) {
 			hormones.add(new Hormone());
@@ -81,8 +86,8 @@ public class Brain {
 		for (int l = 0; l < length; l++) {
 			for (int w = 0; w < width; w++) {
 				if (nodes[l][w] != null) {
-					nodes[l][w].propagateExcitement();
-					modifyWeights(nodes[l][w]);
+					nodes[l][w].propagateExcitement(hormones);
+					//modifyWeights(nodes[l][w]);
 				}
 			}
 		}

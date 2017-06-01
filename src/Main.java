@@ -10,19 +10,17 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		Window window = new Window();
+		Window window = new Window(1200,600);
 
 		Brain brain = new Brain();
 
-		//for (int i=0; i<100; i++) {
 		new Thread() {
 			public void run() {
 				while (true) {
 					brain.generateRandomInputs();
 					brain.process();
 
-					//brain.print();
-					window.drawBrain(brain);
+					window.drawBrain(brain,0,0,600,600);
 
 					try {
 						sleep(100);
@@ -32,7 +30,6 @@ public class Main {
 				}
 			}
 		}.start();
-		//}
 
 	}
 
