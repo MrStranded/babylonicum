@@ -1,4 +1,4 @@
-package intelligence.brain;
+package creature.intelligence.brain;
 
 /**
  * Created by Michael on 30.05.2017.
@@ -36,5 +36,36 @@ public class Axon {
 			excitement *= weight;
 			targetNode.addExcitement(excitement);
 		}
+	}
+
+	/**
+	 * Changes the weigth according to the specifications of the given hormone.
+	 * The maximal axon |weight| is capped to 3.
+	 */
+	public void modifyWeight(Hormone hormone) {
+		weight *= hormone.getGrowthFactor();
+		if (weight > 3d) weight = 3d;
+		if (weight > 0d && weight < 0.05d) weight = -0.5d;
+		if (weight < -3d) weight = -3d;
+		if (weight < 0d && weight > -0.05d) weight = 0.5d;
+	}
+
+	//######################################################################################################
+	//######################################### Getters & Settesr ##########################################
+	//######################################################################################################
+
+
+	public double getWeight() {
+		return weight;
+	}
+	public void setWeight(double weight) {
+		this.weight = weight;
+	}
+
+	public Node getTargetNode() {
+		return targetNode;
+	}
+	public void setTargetNode(Node targetNode) {
+		this.targetNode = targetNode;
 	}
 }
