@@ -87,7 +87,7 @@ public class Window extends Canvas implements Accessible{
 						if (node != null) {
 							int x = dx*(l+1);
 							int y = dy*(w+1);
-							g2.setColor(Color.DARK_GRAY);
+							g2.setColor(new Color((int) (2*node.getExcitement()),(int) (2*node.getExcitement()),(int) (2*node.getExcitement())));
 							g2.fillOval(x, y,sx,sy);
 							g2.setColor(Color.BLACK);
 							g2.drawString(String.valueOf(node.getExcitement()).substring(0,3),x+sx,y+sy/2);

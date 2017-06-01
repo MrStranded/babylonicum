@@ -15,11 +15,11 @@ public class Brain {
 	/**
 	 * the length of the creature.intelligence.brain cell array
 	 */
-	private int length = 3;
+	private int length = 10;
 	/**
 	 * the width of the creature.intelligence.brain cell array
 	 */
-	private int width = 20;
+	private int width = 10;
 	/**
 	 * number of maximum Axon connections
 	 */
@@ -58,7 +58,7 @@ public class Brain {
 	public void generateRandomInputs() {
 		for (int w = 0; w < width; w++) {
 			if (nodes[0][w] != null) {
-				nodes[0][w].setExcitement(Math.random());
+				nodes[0][w].setExcitement(Math.random()*100);
 			}
 		}
 		// temporary!
