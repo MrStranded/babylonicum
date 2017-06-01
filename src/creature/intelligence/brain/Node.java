@@ -111,6 +111,58 @@ public class Node {
 		}
 	}
 
+	/**
+	 * Adds a new Axon targeting the given node if no Axon with that destination already exists.
+	 */
+	public void addAxon(Node target) {
+		if (axons == null) {
+			axons = new Axon[1];
+			axons[1] = new Axon(target);
+		} else {
+			boolean exists = false;
+			int size = 0;
+			for (Axon axon : axons) {
+				if (axon != null) {
+					if (target == axon.getTargetNode()) {
+						exists = true;
+						break;
+					}
+					size++;
+				}
+			}
+			if (!exists) {
+				Axon[] newAxons = new Axon[size+1];
+				int i=0;
+				for (Axon axon : axons) {
+					if (axon != null) {
+						newAxons[i++] = axon;
+					}
+				}
+				newAxons[i] = new Axon(target);
+				axons = newAxons;
+			}
+		}
+	}
+
+	/**
+	 * Removes a random Axon.
+	 */
+	public void removeAxon() {
+		if (axons != null) {
+			axons[(int) (Math.random()*axons.length)] = null;
+		}
+	}
+
+	/**
+	 * Changes the weight of a random Axon.
+	 */
+	public void changeAxon() {
+		if (axons != null) {
+			Axon axon = axons[(int) (Math.random()*axons.length)];
+			if (axon != null) axon.setWeight(-axon.getWeight());
+		}
+	}
+
 	//######################################################################################################
 	//######################################### Getters & Setters ##########################################
 	//######################################################################################################

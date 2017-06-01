@@ -109,7 +109,7 @@ public class Window extends Canvas implements Accessible{
 											int tx = xPos + (axon.getTargetNode().getX() + 1) * dx;
 											int ty = yPos + (axon.getTargetNode().getY() + 1) * dy;
 
-											g2.drawLine(x, y, tx, ty);
+											g2.drawLine(x+dx/4, y+dy/4, tx+dx/4, ty+dy/4);
 										}
 									}
 								}
@@ -155,18 +155,18 @@ public class Window extends Canvas implements Accessible{
 			int dx = width/(s+2);
 			int dy = height/(s+2);
 
-			g2.setColor(Color.BLACK);
 			for (int x=0; x<s; x++) {
 				for (int y=0; y<s; y++) {
 					Tile tile = surface.getTile(x,y);
 					if (tile != null) {
 						int tx = xPos + dx*(x+1);
 						int ty = yPos + dy*(y+1);
-						g2.drawRect(tx,ty,dx,dy);
+						int c = tile.getHeight()*255/100;
+						g2.setColor(new Color(c,c,c));
+						g2.fillRect(tx,ty,dx,dy);
 						if ((creature != null) && (creature.getX() == x) && (creature.getY() == y)) {
 							g2.setColor(Color.BLUE);
 							g2.fillOval(tx,ty,dx,dy);
-							g2.setColor(Color.BLACK);
 						}
 					}
 				}

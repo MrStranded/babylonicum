@@ -1,5 +1,6 @@
 import creature.Creature;
 import creature.intelligence.brain.Brain;
+import creature.intelligence.input.Perception;
 import output.visual.Window;
 import world.Surface;
 
@@ -23,7 +24,9 @@ public class Main {
 		new Thread() {
 			public void run() {
 				while (true) {
-					creature.getBody().getBrain().generateRandomInputs();
+					creature.getBody().getBrain().mutate();
+					creature.getBody().getBrain().generateHormones();
+					Perception.see(creature,surface);
 					creature.getBody().getBrain().process();
 
 					creature.move(surface);

@@ -66,7 +66,12 @@ public class Brain {
 			nodes[0][exPos].setExcitement(100d);
 		}
 		exPos = (exPos+1)%width;
-		// temporary!
+	}
+
+	/**
+	 * Sometimes creates a random hormone.
+	 */
+	public void generateHormones() {
 		if (Math.random()>0.7d) {
 			hormones.add(new Hormone());
 		}
@@ -123,6 +128,24 @@ public class Brain {
 	//######################################################################################################
 
 	/**
+	 * Sometimes adds, removes or changes an Axon.
+	 */
+	public void mutate() {
+		Node node = getNode((int) (Math.random()*(length-1)),(int) (Math.random()*width));
+		if (node != null) {
+			double p = Math.random();
+			if (p > 0.7d) {
+				Node target = selectTargetNode(node.getX(),node.getY());
+				node.addAxon(target);
+			} else if (p > 0.4d) {
+				node.removeAxon();
+			} else if (p > 0.1d) {
+				node.changeAxon();
+			}
+		}
+	}
+
+	/**
 	 * The go-to method to create a new net of nodes and axons.
 	 */
 	private void createNodes() {
@@ -154,28 +177,37 @@ public class Brain {
 	private List<Node> selectTargetNodes(int x, int y) {
 		List<Node> targetNodes = new ArrayList<Node>();
 		for (int c = 0; c < connections; c++) {
-			// This is the case when the probability falls into the forward range
-			int newX = x, newY = y;
-			if (Math.random() * (maxBackwardDistance + maxForwardDistance) >= maxBackwardDistance) {
-				newX = x + (int) (Math.random() * maxForwardDistance) + 1;
-				if (newX >= length) newX = length;
-
-				// This is the case when the probability falls into the backward range
-			} else {
-				newX = x - (int) (Math.random() * maxBackwardDistance) - 1;
-				if (newX < 1) newX = 1; // input layer is forbidden
-
-			}
-			// Add the target Node when it is inside the creature.intelligence.brain and not in the same layer as the origin Node.
-			if (newX != x) {
-				newY = (int) (Math.random() * width);
-
-				if (inBounds(newX, newY) && !targetNodes.contains(nodes[newX][newY])) {
-					targetNodes.add(nodes[newX][newY]);
-				}
+			Node target = selectTargetNode(x,y);
+			if ((target != null) && !targetNodes.contains(target)) {
+				targetNodes.add(target);
 			}
 		}
 		return targetNodes;
+	}
+
+	/**
+	 * Selects a random Node as an Axon target for the given Node.
+	 */
+	private Node selectTargetNode(int x, int y) {
+		// This is the case when the probability falls into the forward range
+		int newX = x, newY = y;
+		if (Math.random() * (maxBackwardDistance + maxForwardDistance) >= maxBackwardDistance) {
+			newX = x + (int) (Math.random() * maxForwardDistance) + 1;
+			if (newX >= length) newX = length;
+
+			// This is the case when the probability falls into the backward range
+		} else {
+			newX = x - (int) (Math.random() * maxBackwardDistance) - 1;
+			if (newX < 1) newX = 1; // input layer is forbidden
+
+		}
+		// Add the target Node when it is inside the creature.intelligence.brain and not in the same layer as the origin Node.
+		if (newX != x) {
+			newY = (int) (Math.random() * width);
+
+			if (inBounds(newX, newY)) return nodes[newX][newY];
+		}
+		return null;
 	}
 
 	//######################################################################################################

@@ -41,6 +41,7 @@ public class Surface {
 		for (int x=0; x<size; x++) {
 			for (int y=0; y<size; y++) {
 				tiles[x][y] = new Tile(x,y);
+				tiles[x][y].setHeight((int) (Math.sin(x*2d*Math.PI/size)*Math.cos(y*2d*Math.PI/size)*50d+50d));
 			}
 		}
 	}
@@ -93,7 +94,19 @@ public class Surface {
 	 * Returns the tile on the given position.
 	 */
 	public Tile getTile(int x,int y) {
-		return tiles[x][y];
+		if (inBounds(x,y)) {
+			return tiles[x][y];
+		} else {
+			int[] pos = getPosition(x,y);
+			return tiles[pos[0]][pos[1]];
+		}
+	}
+
+	/**
+	 * Returns whether a position is inside the bounds of the Tile array.
+	 */
+	private boolean inBounds(int x,int y) {
+		return ((x>=0)&&(y>=0)&&(x<size)&&(y<size));
 	}
 
 	//######################################################################################################

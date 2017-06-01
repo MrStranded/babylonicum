@@ -11,6 +11,10 @@ public class Tile {
 	 * position of the Tile on it's Surface
 	 */
 	private int x = 0, y = 0;
+	/**
+	 * the height of the tile
+	 */
+	private int height = 0;
 
 	/**
 	 * Go-to constructor for Tiles.
@@ -24,6 +28,12 @@ public class Tile {
 	//######################################### Getters & Settesr ##########################################
 	//######################################################################################################
 
+	public int getHeight() {
+		return height;
+	}
+	public void setHeight(int height) {
+		this.height = height;
+	}
 
 	public int getX() {
 		return x;
