@@ -12,6 +12,7 @@ import javax.accessibility.Accessible;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 /**
  * Created by michael1337 on 01/06/17.
@@ -68,12 +69,18 @@ public class Window extends Canvas implements Accessible{
 
 	/**
 	 * A small method to draw the connections of a brain into the window.
-	 * @param brain that should be displayed.
+	 * @param creature the Creature who's brain should be displayed.
 	 */
-	public void drawBrain(Brain brain, int xPos, int yPos, int width, int height) {
+	public void drawBrain(Creature creature, int xPos, int yPos, int width, int height) {
 		Graphics2D g2 = (Graphics2D) getBufferStrategy().getDrawGraphics();
 
 		g2.clearRect(xPos,yPos,width,height);
+
+		Brain brain = creature.getBody().getBrain();
+		g2.setColor(creature.getColor());
+		for (int i=1; i<=3; i++) {
+			g2.drawRect(xPos + i, yPos + i, width - 2*i, height - 2*i);
+		}
 
 		int dx = width/(brain.getLength()+2);
 		int dy = height/(brain.getWidth()+2);
@@ -101,9 +108,9 @@ public class Window extends Canvas implements Accessible{
 								for (Axon axon : node.getAxons()) {
 									if (axon != null) {
 										if (axon.getWeight() > 0) {
-											g2.setColor(new Color(0, (int) (255d * axon.getWeight() / 2d), 0));
+											g2.setColor(new Color(0, (int) (255d * axon.getWeight() / 1d), 0));
 										} else {
-											g2.setColor(new Color((int) (-255d * axon.getWeight() / 2d), 0, 0));
+											g2.setColor(new Color((int) (-255d * axon.getWeight() / 1d), 0, 0));
 										}
 										if (axon.getTargetNode() != null) {
 											int tx = xPos + (axon.getTargetNode().getX() + 1) * dx;
@@ -144,7 +151,7 @@ public class Window extends Canvas implements Accessible{
 	/**
 	 * A small method to draw a given Surface into the specified area.
 	 */
-	public void drawSurface(Surface surface, Creature creature, int xPos, int yPos, int width, int height) {
+	public void drawSurface(Surface surface, List<Creature> creatures, int xPos, int yPos, int width, int height) {
 		Graphics2D g2 = (Graphics2D) getBufferStrategy().getDrawGraphics();
 
 		g2.clearRect(xPos,yPos,width,height);
@@ -164,12 +171,15 @@ public class Window extends Canvas implements Accessible{
 						int c = tile.getHeight()*255/100;
 						g2.setColor(new Color(c,c,c));
 						g2.fillRect(tx,ty,dx,dy);
-						if ((creature != null) && (creature.getX() == x) && (creature.getY() == y)) {
-							g2.setColor(Color.BLUE);
-							g2.fillOval(tx,ty,dx,dy);
-						}
 					}
 				}
+			}
+
+			for (Creature creature : creatures) {
+				int tx = xPos + dx*(creature.getX()+1);
+				int ty = yPos + dy*(creature.getY()+1);
+				g2.setColor(creature.getColor());
+				g2.fillOval(tx,ty,dx,dy);
 			}
 		}
 	}

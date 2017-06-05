@@ -20,32 +20,18 @@ public class Decisions {
 			int dir = 0;
 			int width = brain.getWidth();
 			int length = brain.getLength();
-			for (int w=0; w<width; w++) {
-				Node node = brain.getNode(length-1,w);
-				if (node!=null) {
-					if (node.getExcitement()>50d) {
-						switch (dir) {
-							case 0:
-								direction[0]++;
-								break;
-							case 1:
-								direction[1]++;
-								break;
-							case 2:
-								direction[0]--;
-								break;
-							case 3:
-								direction[1]--;
-								break;
-						}
-					}
-					dir = (dir+1)%4;
-				}
+
+			double velocity = 0,angle = 0;
+
+			if (brain.getNode(length-1,0) != null) {
+				velocity = brain.getNode(length-1,0).getExcitement();
 			}
-			if (direction[0] > 1) direction[0] = 1;
-			if (direction[0] < -1) direction[0] = -1;
-			if (direction[1] > 1) direction[1] = 1;
-			if (direction[1] < -1) direction[1] = -1;
+			if (brain.getNode(length-1,1) != null) {
+				angle = brain.getNode(length-1,1).getExcitement();
+			}
+			angle = angle*2d*Math.PI/100d;
+			direction[0] = (int) (Math.cos(angle)*velocity/30d);
+			direction[1] = (int) (Math.sin(angle)*velocity/30d);
 		}
 
 		return direction;

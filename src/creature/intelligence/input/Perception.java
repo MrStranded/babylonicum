@@ -3,6 +3,9 @@ package creature.intelligence.input;
 import creature.Creature;
 import creature.intelligence.brain.Brain;
 import world.Surface;
+import world.Tile;
+
+import java.util.List;
 
 /**
  * Created by Michael on 01.06.2017.
@@ -19,18 +22,22 @@ public class Perception {
 			Brain brain = creature.getBody().getBrain();
 			int x = creature.getX();
 			int y = creature.getY();
+			List<Tile> neighbours = surface.getNeighbours(surface.getTile(x,y));
 			if (brain != null) {
-				if ((brain.getNode(0,0) != null) && (surface.getTile(x-1,y) != null)) {
-					brain.getNode(0,0).setExcitement(surface.getTile(x-1,y).getHeight());
+				int i=0;
+				// normal
+				for (Tile tile : neighbours) {
+					if ((brain.getNode(0,i) != null) && (tile != null)) {
+						brain.getNode(0,i).setExcitement(tile.getHeight());
+					}
+					i++;
 				}
-				if ((brain.getNode(0,1) != null) && (surface.getTile(x,y-1) != null)) {
-					brain.getNode(0,1).setExcitement(surface.getTile(x,y-1).getHeight());
-				}
-				if ((brain.getNode(0,2) != null) && (surface.getTile(x+1,y) != null)) {
-					brain.getNode(0,2).setExcitement(surface.getTile(x+1,y).getHeight());
-				}
-				if ((brain.getNode(0,3) != null) && (surface.getTile(x,y+1) != null)) {
-					brain.getNode(0,3).setExcitement(surface.getTile(x,y+1).getHeight());
+				// inverted
+				for (Tile tile : neighbours) {
+					if ((brain.getNode(0,i) != null) && (tile != null)) {
+						brain.getNode(0,i).setExcitement(100d-tile.getHeight());
+					}
+					i++;
 				}
 			}
 		}

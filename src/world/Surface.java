@@ -79,10 +79,10 @@ public class Surface {
 	 * Caps the given coordinate to fit the bounds of the array.
 	 */
 	public int[] getPosition(int x, int y) {
-		if (x<0) x = size-1;
-		if (y<0) y = size-1;
-		if (x>=size) x = 0;
-		if (y>=size) y = 0;
+		while (x<0) x = x + size;
+		while (y<0) y = y + size;
+		while (x>=size) x = x - size;
+		while (y>=size) y = y - size;
 
 		int[] pos = new int[2];
 		pos[0] = x;

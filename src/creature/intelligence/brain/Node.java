@@ -70,7 +70,7 @@ public class Node {
 						axon.propagateExcitement(excitement);
 						if (hormones != null) {
 							for (Hormone hormone : hormones) {
-								axon.modifyWeight(hormone);
+								axon.modifyWeight(hormone,excitement);
 							}
 						}
 					}
@@ -117,7 +117,7 @@ public class Node {
 	public void addAxon(Node target) {
 		if (axons == null) {
 			axons = new Axon[1];
-			axons[1] = new Axon(target);
+			axons[0] = new Axon(target);
 		} else {
 			boolean exists = false;
 			int size = 0;

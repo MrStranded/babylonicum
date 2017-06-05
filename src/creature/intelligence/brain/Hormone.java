@@ -20,7 +20,7 @@ public class Hormone {
 	 * Go-to constructor for Hormones.
 	 */
 	public Hormone() {
-		growthFactor = Math.random()*0.1d+0.975d;
+		//growthFactor = Math.random()*0.1d+0.975d;
 		duration = (int) (Math.random()*5d) + 1;
 	}
 
