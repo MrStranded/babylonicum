@@ -47,6 +47,7 @@ public class Main {
 						creature.getBody().getBrain().damp();
 						creature.getBody().getBrain().mutate();
 						creature.getBody().getBrain().generateHormones();
+						creature.getBody().getBrain().modifyWeights();
 						Perception.see(creature, surface);
 						creature.getBody().getBrain().process();
 

@@ -126,16 +126,21 @@ public class Window extends Canvas implements Accessible{
 				}
 			}
 
-			if (brain.getHormones() != null) {
-				int hy = 20;
-				for (Hormone hormone : brain.getHormones()) {
-					if (hormone.getGrowthFactor() > 1d) {
-						g2.setColor(new Color(0,150,0));
-					} else {
-						g2.setColor(new Color(150,0,0));
+			for (int y=0; y<brain.getWidth(); y++) {
+				if (brain.inBounds(brain.getLength() - 1, y) && (brain.getNode(brain.getLength() - 1, y) != null)) {
+					Node node = brain.getNode(brain.getLength()-1,y);
+					if (node.getHormones() != null) {
+						int hy = 0;
+						for (Hormone hormone : node.getHormones()) {
+							if (hormone.getGrowthFactor() > 1d) {
+								g2.setColor(new Color(0, 150, 0));
+							} else {
+								g2.setColor(new Color(150, 0, 0));
+							}
+							g2.drawString("H: " + hormone.getGrowthFactor() + " / " + hormone.getDuration(), xPos + dx*(brain.getLength()+1), yPos + dy*(y+1)+hy);
+							hy += 20;
+						}
 					}
-					g2.drawString("H: "+hormone.getGrowthFactor()+" / "+hormone.getDuration(),xPos + 30,yPos + hy);
-					hy += 20;
 				}
 			}
 		}

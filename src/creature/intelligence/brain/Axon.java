@@ -57,11 +57,8 @@ public class Axon {
 	 * The maximal axon |weight| is capped to 3.
 	 */
 	public void modifyWeight(Hormone hormone, double excitement) {
-		if (weight > 0) {
-			weight *= (100d - excitement) / 100d + excitement / 100d * hormone.getGrowthFactor();
-		} else {
-			weight *= (100d - excitement) / 100d + excitement / 100d / hormone.getGrowthFactor();
-		}
+		//weight *= (100d - excitement) / 100d + excitement / 100d * hormone.getGrowthFactor();
+		weight *= hormone.getGrowthFactor();
 		double max = 1d;
 		if (weight > max) weight = max;
 		//if (weight > 0d && weight < 0.05d) weight = -0.5d;

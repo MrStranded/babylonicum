@@ -37,13 +37,13 @@ public class Brain {
 	 */
 	private Node[][] nodes;
 	/**
-	 * the hormones that are active at the time
-	 */
-	private List<Hormone> hormones = new ArrayList<Hormone>();
-	/**
 	 * remembers the movement over the last few iterations
 	 */
 	private int[] movement = new int[3];
+	/**
+	 * remembers the angle over the last few iterations
+	 */
+	private int[] angle = new int[3];
 
 	/**
 	 * Creates a standard creature.intelligence.brain.
@@ -87,14 +87,52 @@ public class Brain {
 	 * Sometimes creates a random hormone.
 	 */
 	public void generateHormones() {
-		if (Math.random()>0.7d) {
+		// speed
+		if (inBounds(length-1,0) && (nodes[length-1][0] != null)) {
+			Node node = nodes[length-1][0];
+			double speedFitness = getNormedSpeedFitness();
 			Hormone hormone = new Hormone();
-			hormones.add(hormone);
-			double fitness = getNormedFitness();
-			if (fitness > 0d) {
-				hormone.setGrowthFactor(1d - Math.random()*fitness/10d);
+			if (speedFitness > 0d) {
+				hormone.setGrowthFactor(1d - Math.random()*speedFitness/4d);
+				node.getHormones().add(hormone);
 			} else {
-				hormone.setGrowthFactor(1d - Math.random()*fitness/2d);
+				hormone.setGrowthFactor(1d - Math.random()*speedFitness/2d);
+				node.getHormones().add(hormone);
+			}
+		}
+		// angle
+		if (inBounds(length-1,1) && (nodes[length-1][1] != null)) {
+			Node node = nodes[length-1][1];
+			double angleFitness = getNormedAngleFitness();
+			Hormone hormone = new Hormone();
+			if (angleFitness > 0d) {
+				hormone.setGrowthFactor(1d - Math.random()*angleFitness/10d);
+				node.getHormones().add(hormone);
+			} else {
+				hormone.setGrowthFactor(1d - Math.random()*angleFitness/5d);
+				node.getHormones().add(hormone);
+			}
+		}
+	}
+
+	/**
+	 * Goes through all the Nodes and modifies it's Axons according to it's Hormones.
+	 */
+	public void modifyWeights() {
+		for (int l = 0; l < length; l++) {
+			for (int w = 0; w < width; w++) {
+				Node node = nodes[l][w];
+				if (node != null) {
+					if (node.getHormones() != null && node.getAxons() != null) {
+						for (Hormone hormone : node.getHormones()) {
+							for (Axon axon : node.getAxons()) {
+								if (axon != null && hormone != null) {
+									axon.modifyWeight(hormone,node.getExcitement());
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -106,8 +144,7 @@ public class Brain {
 		for (int l = 0; l < length; l++) {
 			for (int w = 0; w < width; w++) {
 				if (nodes[l][w] != null) {
-					nodes[l][w].propagateExcitement(hormones);
-					//modifyWeights(nodes[l][w]);
+					nodes[l][w].propagateExcitement();
 				}
 			}
 		}
@@ -128,26 +165,21 @@ public class Brain {
 	}
 
 	/**
-	 * Modifies the weigths of the axons going out of this node according to the existing hormones.
-	 */
-	private void modifyWeights(Node node) {
-		if ((hormones != null) && (node.getAxons() != null)) {
-			for (Axon axon : node.getAxons()) {
-				for (Hormone hormone : hormones) {
-					axon.modifyWeight(hormone,node.getExcitement());
-				}
-			}
-		}
-	}
-
-	/**
 	 * Decreases the duration of the Hormones and deletes them when necessary.
 	 */
 	private void decreaseHormones() {
-		for (ListIterator<Hormone> hormoneListIterator = hormones.listIterator(); hormoneListIterator.hasNext();) {
-			Hormone hormone = hormoneListIterator.next();
-			hormone.decreaseDuration();
-			if (hormone.isExpired()) hormoneListIterator.remove();
+		for (int x=0; x<length; x++) {
+			for (int y=0; y<width; y++) {
+				Node node = nodes[x][y];
+				if ((node != null) && (node.getHormones() != null)) {
+					List<Hormone> hormones = node.getHormones();
+					for (ListIterator<Hormone> hormoneListIterator = hormones.listIterator(); hormoneListIterator.hasNext(); ) {
+						Hormone hormone = hormoneListIterator.next();
+						hormone.decreaseDuration();
+						if (hormone.isExpired()) hormoneListIterator.remove();
+					}
+				}
+			}
 		}
 	}
 
@@ -167,13 +199,32 @@ public class Brain {
 	 * Returns a double between -1 and 1.
 	 * Generally a value below zero means the creature is too lazy, whereas a value above zero means it is hyperactive.
 	 */
-	private double getNormedFitness() {
+	private double getNormedSpeedFitness() {
 		double goal = 5d;
 		double sum = 0d;
 		for (int i=0; i<movement.length; i++) { sum+=movement[i]; }
 
 		if (sum>goal) {
 			return (sum-goal)/(9-goal);
+		} else {
+			return (-1)*((goal-sum)/goal);
+		}
+	}
+
+	/**
+	 * Returns a double between -1 and 1.
+	 * Generally a value below zero means the creature is walking too straight, whereas a value above zero means it is turning like crazy.
+	 */
+	private double getNormedAngleFitness() {
+		double goal = 30d;
+		double sum = 0d;
+		for (int i=0; i<angle.length-1; i++) { sum+=Math.abs(angle[i]-angle[i+1]); }
+		if (inBounds(length-1,1) && (nodes[length-1][1] != null)) {
+			sum+=Math.abs(angle[angle.length-1]-nodes[length-1][1].getExcitement());
+		}
+
+		if (sum>goal) {
+			return (sum-goal)/(300-goal);
 		} else {
 			return (-1)*((goal-sum)/goal);
 		}
@@ -282,7 +333,7 @@ public class Brain {
 	/**
 	 * This method checks whether a coordinate is inside the creature.intelligence.brain's scope.
 	 */
-	private boolean inBounds(int x, int y) {
+	public boolean inBounds(int x, int y) {
 		return (x >= 0) && (y >= 0) && (x < length) && (y < width);
 	}
 
@@ -320,13 +371,6 @@ public class Brain {
 	}
 	public void setNodes(Node[][] nodes) {
 		this.nodes = nodes;
-	}
-
-	public List<Hormone> getHormones() {
-		return hormones;
-	}
-	public void setHormones(List<Hormone> hormones) {
-		this.hormones = hormones;
 	}
 
 	//######################################################################################################

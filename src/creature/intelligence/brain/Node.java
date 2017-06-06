@@ -1,5 +1,6 @@
 package creature.intelligence.brain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -22,6 +23,10 @@ public class Node {
 	 * ongoing Axons
 	 */
 	private Axon[] axons;
+	/**
+	 * the hormones that are active at the time
+	 */
+	private List<Hormone> hormones = new ArrayList<Hormone>();
 	/**
 	 * coordinates of the Node. x belongs to length, y to width
 	 */
@@ -62,15 +67,21 @@ public class Node {
 	/**
 	 * If the current excitement exceeds the threshold, sends it through each Axon to the target Nodes.
 	 */
-	public void propagateExcitement(List<Hormone> hormones) {
+	public void propagateExcitement() {
 		if ((axons != null)&&(axons.length > 0)) {
 			if (excitement >= threshold) {
 				for (Axon axon : axons) {
 					if (axon != null) {
 						axon.propagateExcitement(excitement);
-						if (hormones != null) {
-							for (Hormone hormone : hormones) {
-								axon.modifyWeight(hormone,excitement);
+						if (axon.getTargetNode() != null) {
+							List<Hormone> hormones = axon.getTargetNode().getHormones();
+							if (hormones != null) {
+								for (Hormone hormone : hormones) {
+									axon.modifyWeight(hormone, excitement);
+									Hormone newHormone = new Hormone();
+									newHormone.setDuration(hormone.getDuration());
+									newHormone.setGrowthFactor(hormone.getGrowthFactor());
+								}
 							}
 						}
 					}
@@ -193,5 +204,12 @@ public class Node {
 	}
 	public void setAxons(Axon[] axons) {
 		this.axons = axons;
+	}
+
+	public List<Hormone> getHormones() {
+		return hormones;
+	}
+	public void setHormones(List<Hormone> hormones) {
+		this.hormones = hormones;
 	}
 }
